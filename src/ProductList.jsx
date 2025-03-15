@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
+import { addItem } from './CartSlice';
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
-    const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [showPlants, setShowPlants] = useState(false);
+    const [addedToCart, setAddedToCart] = useState({}); // State to control the visibility of the About Us page
+
+    const handleAddToCart = (product) => {
+        dispatchEvent(addItem(product));
+        setAddedToCart((prevState) =>({
+            ...prevState,
+            [product.name]: true,
+        }));
+    };
 
     const plantsArray = [
         {
@@ -273,8 +283,23 @@ function ProductList({ onHomeClick }) {
                 </div>
             </div>
             {!showCart ? (
-                <div className="product-grid">
-
+                <div className="product-grid">                    
+                {plantsArray.map((item, index) => (
+                <div key={index}>
+                <h2 className="plant_heading">{item.category}</h2>
+                <div className="product-list">
+                {item.plants.map((plant, plantIndex) => (
+                    <div className="product-card" key={plantIndex}>
+                    <h3 className="product-title">{plant.name}</h3>
+                    <img className="product-image" src={plant.image} alt={plant.name} />
+                    <p className="product-price">{plant.cost}</p>
+                    <p>{plant.description}</p>
+                    <button className='product-button' onClick={() => handleAddToCart(plant)}>add to cart</button>
+                </div>
+              ))}
+              </div>
+            </div>
+          ))}
 
                 </div>
             ) : (
